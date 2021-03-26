@@ -1,0 +1,49 @@
+##### GENERAL #####
+#Here's the preprocessing timeline for the Insta project. The steps are below:
+    #1. Download all data from XNAT to a local computer
+    #2. Install docker and fsl
+    #3. Open a terminal window
+    #4. Convert all raw data to BIDS format using heudiconv
+    #5. Create derivatives folder under "bids" folder
+    #6. Run MRIQC on bids data
+    #7. Run fMRIPrep on bids data
+    #8. Run analyses in fsl! :)
+
+##### HEUDICONV #####
+#Here is the script you will need to run for heudiconv.
+    #1. First you need to do a dry run on a participant to create this thing called a heuristics file. It will output as "convertall.py".
+    #2. Then you need to go into that convertall.py file and edit it according to the columns in a file called "dicoms.tsv", which will be in the same folder.
+
+docker run --rm -it \
+-v /Users/nicolehenninger/Desktop/insta/raw:/base \
+nipy/heudiconv:debian \
+-d /base/VENK-TINDR-{subject}/*/DICOM/*.dcm \
+-o /base/BIDS/ \
+-f convertall \
+-s  \
+-c none
+
+# Now you can run heudiconv on one on subject
+
+#Liz's Example
+
+docker run --rm -it \
+-v /Users/lizbeard/Desktop/DEAL:/base \
+nipy/heudiconv:debian \
+-d /base/DEAL-pilot-{subject}/scans/*/DICOM/*.dcm \
+-o /base/BIDS/ \
+-f /base/BIDS/code/convertall.py \
+-s 001 \
+-c dcm2niix \
+-b
+
+#Nicole's example
+docker run --rm -it \
+-v /Users/nicolehenninger/Desktop/insta/raw:/base \
+nipy/heudiconv:debian \
+-d /base/VENK-TINDR-{subject}/*/DICOM/*.dcm \
+-o /base/BIDS/ \
+-f /base/BIDS/code/convertall.py \
+-s 313 \
+-c dcm2niix \
+-b  \
